@@ -28,7 +28,7 @@ AudioPlayer up;
 
 String [] ngu = {"諦", "め", "て", "た", "ま", "る", "か", "!", "!"};
 
-
+final int device=-1;
 final int language=0;
 final int title=1;
 final int timer=title+1;
@@ -37,7 +37,8 @@ final int select=game+1;
 final int revival=select+1;
 final int giveup=revival+1;
 final int reset=giveup+1;
-int status=title;
+int status=device;
+int devicec=0;
 
 boolean lang=true;//true:Japanese  false:English
 boolean which=false;
@@ -67,10 +68,18 @@ float vy;
 float er; //Ellipse Radius
 int efill;
 
+
+final int start=1;
+final int fire=2;
+final int sea=3;
+final int tree=4;
+int stage=start;
+
+
 void setup()
 {
-  //fullScreen();
-  size(1200, 600); //w:h = 2:1
+  fullScreen();
+  //size(1200, 600); //w:h = 2:1
 
   rectMode(CENTER);
   textMode(CENTER);
@@ -98,6 +107,7 @@ void setup()
   hmovem.add(false);
   hmovem.add(false);
   hmovem.add(false);
+  hmovem.add(false);
 
   x=0;
   y=0;
@@ -106,6 +116,7 @@ void setup()
   fx=width/2;
   fy=height/4;
   efill=allc;
+  gc=3;
 
   spr = new Spread[6];
 }
@@ -116,6 +127,40 @@ void draw()
   noStroke();
 
   switch(status) {
+
+  case device:
+
+    for (int i=-1; i<2; i+=2)
+    {
+      if (mousePressed)
+      {
+        if (mouseX>=width/2-i*width/8-width/8 && mouseX<=width/2-i*width/8+width/8 && mouseY>=height/2-height/12 && mouseY<=height/2+height/12)
+          devicec=i;
+      }
+      if (devicec==i)
+      {
+        if (keyPressed && key==ENTER)
+        {
+          status=title;
+          keyPressed=false;
+        }
+
+        fill(150);
+      } else
+        noFill();
+      stroke(0);
+      rect(width/2-i*width/8, height/2, width/4, height/6);
+    }
+    textSize(width/24);
+    fill(0);
+    text("SELECT THE DEVICE", width/3.5, height/5);
+    text("スマホ", width/3.2, height/1.9);
+    text("パソコン", width/1.85, height/1.9);
+    textSize(30);
+    text("エンターキーを押してスタート", width/3, height/1.5);
+
+    break;
+
 
   case language:
 
@@ -152,115 +197,9 @@ void draw()
   case game:
 
     count++;
-    if (count>=dis)
-    {
-      if (Count>=dis/3)
-        j2++;
-      i2++;
-      count=0;
-      Count++;
-    }
 
-    if (Count>=dis/3.8)
-    {
-      if (allc>=255)
-      {
-        allc=255;
-        efill=255;
-      } else
-      {
-        allc+=5;
-        efill+=5;
-      }
-    }
+    b1();
 
-    fill(allc);
-    rect(width/2, height/1.02, width, height/8);
-    cir(efill);
-
-    for (int i=kk; i<bullet.size(); i++)
-    {
-      for (int j=ii; j<land.size(); j++)
-      {
-        if (land.size()!=0)
-        {
-          if (bullet.get(i).fx+bullet.get(i).sx/2>=land.get(j).x-land.get(j).sizex/2 &&  bullet.get(i).fx-bullet.get(i).sx/2<=land.get(j).x+land.get(j).sizex/2 && bullet.get(i).fy+bullet.get(i).sy/2>=height*0.9166666-land.get(j).sizey && bullet.get(i).fy-bullet.get(i).sy/2<=height*0.9166666)
-          {
-            if (kill.isPlaying()==false)
-              kill.rewind();
-            kill.play();
-            bullet.remove(i);
-            land.remove(j);
-          }
-        }
-      }
-      for (int h=jj; h<sky.size(); h++)
-      {
-        if (bullet.get(i).fx+bullet.get(i).sx/2>=land.get(h).x-land.get(h).sizex/2 && bullet.get(i).fy+bullet.get(i).sy/2>=height*0.9166666-land.get(h).sizey && bullet.get(i).fy-bullet.get(i).sy/2<=height*0.9166666)
-        {
-          kill.play();
-          bullet.remove(i);
-          sky.remove(h);
-        }
-      }
-    }
-
-    for (int i=i1; i<i2; i++)
-    {
-      land.add(new Land(random(width/40, width/20), random(height/20, height/6), random(width/240, width/120)));
-      i1++;
-    }
-    for (int i=ii; i<land.size(); i++)
-    {
-      land.get(i).generate();
-      land.get(i).move();
-      if (fx+x+er/2>=land.get(i).x-land.get(i).sizex/2 && fx+x-er/2<=land.get(i).x+land.get(i).sizex/2 && fy+y+er/2>=height*0.9166666-land.get(i).sizey && fy+y-er/2<=height*0.9166666)
-      {
-        allc=abs(efill-255);
-        efill=abs(efill-255);
-        status=select;
-      }
-    }
-
-    if (Count>=dis/3)
-    {
-      for (int j=j1; j<j2; j++)
-      {
-        sky.add(new Sky(random(width/30, width/12), random(height/60, height/30), random(width/240, width/120), random(height/24, height*0.6666666666)));
-        j1++;
-      }
-
-      for (int i=jj; i<sky.size(); i++)
-      {
-        sky.get(i).generate();
-        sky.get(i).move();
-        if (fx+x+er/2>=sky.get(i).x-sky.get(i).sizex/2 && fx+x-er/2<=sky.get(i).x+sky.get(i).sizex/2 && fy+y+er/2>=sky.get(i).y-sky.get(i).sizey/2 && fy+y-er/2<=sky.get(i).y+sky.get(i).sizey/2)
-        {
-          allc=abs(efill-255);
-          efill=abs(efill-255);
-          status=select;
-        }
-      }
-    }
-
-    if (keyPressed && key==' ')
-    {
-      k2++;
-      keyPressed=false;
-    }
-    for (int i=k1; i<k2; i++)
-    {
-      shot.rewind();
-      bullet.add(new Bullet(fx+x, fy+y));
-      k1++;
-    }
-    for (int i=kk; i<bullet.size(); i++)
-    {
-      shot.play();
-      bullet.get(i).bullet();
-      bullet.get(i).move();
-    }
-    move();
 
     break;
 
@@ -274,8 +213,6 @@ void draw()
 
     if (C>=90)
     {
-      if (selection.isPlaying()==false)
-        selection.rewind();
       selection.play();
       for (int i=-1; i<2; i+=2)
       {
@@ -497,7 +434,6 @@ void draw()
 
   case reset:
 
-
     allc=efill;
     vy=0;
     C=0;
@@ -507,7 +443,12 @@ void draw()
     time2=0;
     jumping=usual;
     countdown.rewind();
-
+    selection.rewind();
+    broken.rewind();
+    gc=3;
+    guard=false;
+    recover=false;
+  
     if (which==true)
     {
       up.rewind();
@@ -517,9 +458,7 @@ void draw()
     {
       fx=width/2;
       fy=height/4;
-      broken.rewind();
       die.rewind();
-      selection.rewind();
       retimer=0;
       x=0;
       y=0;
@@ -561,6 +500,8 @@ void keyPressed()
       break;
     }
   }
+  if (key==' ' && recover==false)
+    guard=true;
 }
 
 void keyReleased()
@@ -585,7 +526,9 @@ void keyReleased()
       hmovem.set(3, false);
       break;
     }
-  }
+  } else
+    if (key==' ')
+      guard=false;
 }
 
 void cir(int i)

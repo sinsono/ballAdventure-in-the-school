@@ -25,16 +25,17 @@ void move()
   switch(jumping) {
 
   case usual:
-println(y);
+
     if (y>=0)
       y=0;
     else
     {
       y+=vy;
-      vy+=height/857;
+      vy+=height*0.0011668611435;
     }
     if (keyPressed && keyCode==UP)
     {
+      hop.rewind();
       jumping=jump1;
       vy=height/40;
       keyPressed=false;
@@ -45,8 +46,11 @@ println(y);
 
   case jump1:
 
+    hop.play();
+
     if (keyPressed && keyCode==UP)
     {
+      step.rewind();
       jumping=jump2;
       vy=height/40;
       keyPressed=false;
@@ -68,6 +72,7 @@ println(y);
 
   case jump2:
 
+    step.play();
 
     y-=vy;
     vy-=height*0.0011668611435;
