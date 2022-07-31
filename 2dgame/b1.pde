@@ -66,7 +66,7 @@ void b1()
     }
   }
 
-  if (Count>=dis/3)
+  if (Count>=dis/6-level)
   {
     for (int j=j1; j<j2; j++)
     {
@@ -157,9 +157,9 @@ for (int i=kk; i<bullet.size(); i++)
   {
     println(gc);
     gc+=0.007;
-    if (gc>=3)
+    if (gc>=6-level)
     {
-      gc=3;
+      gc=6-level;
       recover=false;
     }
   }
@@ -168,8 +168,8 @@ for (int i=kk; i<bullet.size(); i++)
   noStroke();
   rect(width/10, height/20, map(gc-1, 0, 2, width/9, width/3), height/30);
   rectMode(CENTER);
-  
-  for (int i=0; i<4; i++)
+
+  for (int i=0; i<=6-level; i++)
   {
     fill(allc);
     textSize(height/25);

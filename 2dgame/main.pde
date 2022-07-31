@@ -28,6 +28,8 @@ AudioPlayer up;
 
 String [] ngu = {"諦", "め", "て", "た", "ま", "る", "か", "!", "!"};
 
+int level=3;
+
 final int device=-1;
 final int language=0;
 final int title=1;
@@ -37,7 +39,7 @@ final int select=game+1;
 final int revival=select+1;
 final int giveup=revival+1;
 final int reset=giveup+1;
-int status=device;
+int status=title;
 int devicec=0;
 
 boolean lang=true;//true:Japanese  false:English
@@ -78,8 +80,8 @@ int stage=start;
 
 void setup()
 {
-  fullScreen();
-  //size(1200, 600); //w:h = 2:1
+  //fullScreen();
+  size(1200, 600); //w:h = 2:1
 
   rectMode(CENTER);
   textMode(CENTER);
@@ -128,38 +130,38 @@ void draw()
 
   switch(status) {
 
-  case device:
-
-    for (int i=-1; i<2; i+=2)
-    {
-      if (mousePressed)
-      {
-        if (mouseX>=width/2-i*width/8-width/8 && mouseX<=width/2-i*width/8+width/8 && mouseY>=height/2-height/12 && mouseY<=height/2+height/12)
-          devicec=i;
-      }
-      if (devicec==i)
-      {
-        if (keyPressed && key==ENTER)
-        {
-          status=title;
-          keyPressed=false;
-        }
-
-        fill(150);
-      } else
-        noFill();
-      stroke(0);
-      rect(width/2-i*width/8, height/2, width/4, height/6);
-    }
-    textSize(width/24);
-    fill(0);
-    text("SELECT THE DEVICE", width/3.5, height/5);
-    text("スマホ", width/3.2, height/1.9);
-    text("パソコン", width/1.85, height/1.9);
-    textSize(30);
-    text("エンターキーを押してスタート", width/3, height/1.5);
-
-    break;
+    /*case device:
+     
+     for (int i=-1; i<2; i+=2)
+     {
+     if (mousePressed)
+     {
+     if (mouseX>=width/2-i*width/8-width/8 && mouseX<=width/2-i*width/8+width/8 && mouseY>=height/2-height/12 && mouseY<=height/2+height/12)
+     devicec=i;
+     }
+     if (devicec==i)
+     {
+     if (keyPressed && key==ENTER)
+     {
+     status=title;
+     keyPressed=false;
+     }
+     
+     fill(150);
+     } else
+     noFill();
+     stroke(0);
+     rect(width/2-i*width/8, height/2, width/4, height/6);
+     }
+     textSize(width/24);
+     fill(0);
+     text("SELECT THE DEVICE", width/3.5, height/5);
+     text("スマホ", width/3.2, height/1.9);
+     text("パソコン", width/1.85, height/1.9);
+     textSize(30);
+     text("エンターキーを押してスタート", width/3, height/1.5);
+     
+     break;*/
 
 
   case language:
@@ -214,56 +216,19 @@ void draw()
     if (C>=90)
     {
       selection.play();
-      for (int i=-1; i<2; i+=2)
-      {
-        if (fx+x-er/2>=width/2+i*width/4-width/8 && fx+x-er/2<=width/2+i*width/4+width/8 && fy+y>=height/3-height/12 && fy+y<=height/3+height/12)
-        {
-          if (keyPressed && key==ENTER)
-          {
-            if (i==-1)
-            {
-              efill=abs(efill-255);
-              which=true;
-              status=revival;
-            } else
-            {
-              allc=255;
-              spr[0] = new Spread(fx+x, fy+y, -4, 4, 10);
-              spr[1] = new Spread(fx+x, fy+y, 1.5, 6, 20);
-              spr[2] = new Spread(fx+x, fy+y, 3.5, 4, 20);
-              spr[3] = new Spread(fx+x, fy+y, 3.5, 3.5, 20);
-              spr[4] = new Spread(fx+x, fy+y, 3, 1.5, 20);
-              spr[5] = new Spread(fx+x, fy+y, 0, 0, 10);
-              efill=abs(efill-255);
-              which=false;
-              status=giveup;
-            }
-            selection.close();
-            C=0;
-          }
-          fill(allc);
-          textSize(20);
-          if (lang==false)
-            text("PRESS 'ENTER' KEY", width/2+i*width/4-width/12, height/5);
-          else
-            text("エンターキーをクリック", width/2+i*width/4-width/12, height/5);
-          fill(150);
-        } else
-          noFill();
-        stroke(allc);
-        strokeWeight(10);
-        rect(width/2+i*width/4, height/3, width/4, height/6);
-        strokeWeight(1);
-      }
-      if (fx+x-er/2>=width/2-1*width/4-width/8 && fx+x-er/2<=width/2-1*width/4+width/8 && fy+y>=height/3-height/12 && fy+y<=height/3+height/12 ||fx+x-er/2>=width/2+1*width/4-width/8 && fx+x-er/2<=width/2+1*width/4+width/8 && fy+y>=height/3-height/12 && fy+y<=height/3+height/12 )
-        choose.play();
-      else
-        choose.rewind();
-      fill(allc);
-      textSize(width/21);
-      text("まだいける", width/2-width/2.7, height/2.7);
-      text("もう無理", width/2-width/3.15+width/2.1, height/2.7);
 
+      if (C>=360)
+      {
+        level--;
+        status=revival;
+        C=0;
+        efill=abs(efill-255);
+        selection.close();
+        which=true;
+      }
+      fill(allc);
+      textSize(width/24);
+      text("LEVELを下げます", width/3, height/2);
       if (hmovem.get(0)==true)
       {
         x+=width/200;
@@ -310,10 +275,10 @@ void draw()
 
     C++;
 
-    if (C>=500)
+    if (C>=390)
       status=reset;
     else
-      if (C>=400)
+      if (C>=290)
       {
         up.play();
 
@@ -341,7 +306,7 @@ void draw()
             allc+=5;
       }
 
-    if (C>=360)
+    if (C>=250)
       cir(efill);
     else
     {
@@ -350,7 +315,7 @@ void draw()
       arc(fx+x+er/2, fy+y, er, er, radians(315), radians(495));
     }
 
-    if (330>=C && C>=230)
+    if (220>=C && C>=120)
     {
       t++;
       if (t>=10)
@@ -367,39 +332,39 @@ void draw()
             x++;
     }
 
-    if (220<=C)
-      a=9;
-    else
-      if (200<=C)
-        a=8;
-      else
-        if (180<=C)
-          a=7;
-        else
-          if (160<=C)
-            a=6;
-          else
-            if (140<=C)
-              a=5;
-            else
-              if (120<=C)
-                a=4;
-              else
-                if (100<=C)
-                  a=3;
-                else
-                  if (80<=C)
-                    a=2;
-                  else
-                    if (60<=C)
-                      a=1;
+    /*    if (220<=C)
+     a=9;
+     else
+     if (200<=C)
+     a=8;
+     else
+     if (180<=C)
+     a=7;
+     else
+     if (160<=C)
+     a=6;
+     else
+     if (140<=C)
+     a=5;
+     else
+     if (120<=C)
+     a=4;
+     else
+     if (100<=C)
+     a=3;
+     else
+     if (80<=C)
+     a=2;
+     else
+     if (60<=C)
+     a=1;*/
 
-    for (int i=0; i<a; i++)
-    {
-      fill(efill);
-      textSize(50);
-      text(ngu[i], width/4+i*50, height/7);
-    }
+    /*for (int i=0; i<a; i++)
+     {
+     fill(efill);
+     textSize(50);
+     text(ngu[i], width/4+i*50, height/7);
+     }*/
 
     break;
 
@@ -445,10 +410,10 @@ void draw()
     countdown.rewind();
     selection.rewind();
     broken.rewind();
-    gc=3;
+    gc=6-level;
     guard=false;
     recover=false;
-  
+
     if (which==true)
     {
       up.rewind();
@@ -536,3 +501,53 @@ void cir(int i)
   fill(i);
   circle(fx+x, fy+y, er);
 }
+
+/*for (int i=-1; i<2; i+=2)
+ {
+ if (fx+x-er/2>=width/2+i*width/4-width/8 && fx+x-er/2<=width/2+i*width/4+width/8 && fy+y>=height/3-height/12 && fy+y<=height/3+height/12)
+ {
+ if (keyPressed && key==ENTER)
+ {
+ if (i==-1)
+ {
+ efill=abs(efill-255);
+ which=true;
+ status=revival;
+ } else
+ {
+ allc=255;
+ spr[0] = new Spread(fx+x, fy+y, -4, 4, 10);
+ spr[1] = new Spread(fx+x, fy+y, 1.5, 6, 20);
+ spr[2] = new Spread(fx+x, fy+y, 3.5, 4, 20);
+ spr[3] = new Spread(fx+x, fy+y, 3.5, 3.5, 20);
+ spr[4] = new Spread(fx+x, fy+y, 3, 1.5, 20);
+ spr[5] = new Spread(fx+x, fy+y, 0, 0, 10);
+ efill=abs(efill-255);
+ which=false;
+ status=giveup;
+ }
+ selection.close();
+ C=0;
+ }
+ fill(allc);
+ textSize(20);
+ if (lang==false)
+ text("PRESS 'ENTER' KEY", width/2+i*width/4-width/12, height/5);
+ else
+ text("エンターキーをクリック", width/2+i*width/4-width/12, height/5);
+ fill(150);
+ } else
+ noFill();
+ stroke(allc);
+ strokeWeight(10);
+ rect(width/2+i*width/4, height/3, width/4, height/6);
+ strokeWeight(1);
+ }
+ if (fx+x-er/2>=width/2-1*width/4-width/8 && fx+x-er/2<=width/2-1*width/4+width/8 && fy+y>=height/3-height/12 && fy+y<=height/3+height/12 ||fx+x-er/2>=width/2+1*width/4-width/8 && fx+x-er/2<=width/2+1*width/4+width/8 && fy+y>=height/3-height/12 && fy+y<=height/3+height/12 )
+ choose.play();
+ else
+ choose.rewind();
+ fill(allc);
+ textSize(width/21);
+ text("まだいける", width/2-width/2.7, height/2.7);
+ text("もう無理", width/2-width/3.15+width/2.1, height/2.7);*/
